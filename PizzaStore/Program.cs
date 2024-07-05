@@ -5,11 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("Pizzas") ?? "Data Source=Pizzas.db"; // string de conexão do banco de dados estabelecida em 
-
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddDbContext<PizzaDb>(options => options.UseInMemoryDatabase("items"));
-builder.Services.AddSqlite<PizzaDb>(connectionString); // Registra o uso de SQLite como o provedor de Banco de dados com o qual a aplicação se conecta.
+
+builder.Services.AddDbContext<PizzaDb>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+        new MySqlServerVersion(new Version(8, 0, 21)))); // Registra o uso de SQLite como o provedor de Banco de dados com o qual a aplicação se conecta.
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "PizzaStore API", Description = "Making the Pizzas you love", Version = "v1" });
